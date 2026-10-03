@@ -9,53 +9,85 @@ function ImpactMetricCard({
   progress,
   unit = "",
 }) {
+  const badge = title.includes("Traffic")
+    ? "12% improvement"
+    : "8.4% reduction";
+
   return (
-    <div className="impact-metric-card">
-      <div className="impact-metric-header">
+    <div className="mt-2 rounded-[10px] bg-[#f3f5f4] p-[10px]">
+      {/* Header */}
+      <div className="flex justify-between gap-[5px]">
         <div>
-          <h3>{title}</h3>
-          <span>{subtitle}</span>
+          <h3 className="m-0 text-[14px] text-left">
+            {title}
+          </h3>
+
+          <span className="mt-[2px] block text-[12px] text-[#7b847e] text-left">
+            {subtitle}
+          </span>
         </div>
 
-        <div className="impact-metric-badge">
-          {title.includes("Traffic") ? "12% improvement" : "8.4% reduction"}
+        <div
+          className="
+            h-fit
+            rounded-[5px]
+            bg-[#dcf7e9]
+            px-[5px]
+            py-[3px]
+            text-[12px]
+            font-bold
+            text-[#07824a]
+          "
+        >
+          {badge}
         </div>
       </div>
 
-      <div className="impact-metric-values">
+      {/* Values */}
+      <div className="mt-[9px] grid grid-cols-3">
         <div>
-          <span>BASELINE</span>
-          <strong>
+          <span className="block text-[12px] text-[#858d87]">
+            BASELINE
+          </span>
+
+          <strong className="mt-[2px] block text-[14px]">
             {baseline}
             {unit}
           </strong>
         </div>
 
         <div>
-          <span>CURRENT</span>
-          <strong>
+          <span className="block text-[12px] text-[#858d87]">
+            CURRENT
+          </span>
+
+          <strong className="mt-[2px] block text-[14px]">
             {current}
             {unit}
           </strong>
         </div>
 
         <div>
-          <span>TARGET</span>
-          <strong>
+          <span className="block text-[12px] text-[#858d87]">
+            TARGET
+          </span>
+
+          <strong className="mt-[2px] block text-[14px]">
             {target}
             {unit}
           </strong>
         </div>
       </div>
 
-      <div className="impact-progress">
+      {/* Progress */}
+      <div className="mt-2 h-[4px] overflow-hidden rounded-full bg-[#dce2df]">
         <div
-          className="impact-progress-value"
+          className="h-full rounded-full bg-[#2be78a]"
           style={{ width: `${progress}%` }}
         />
       </div>
 
-      <div className="impact-progress-label">
+      <div className="mt-1 text-[12px] text-[#7e8781]">
         {progress}% of the way to target
       </div>
     </div>

@@ -654,7 +654,7 @@ function LiveTrafficPage({ onNavigate }) {
         }
       `}</style>
 
-      <Sidebar activePage="live-traffic" onNavigate={onNavigate} />
+      {/* <Sidebar activePage="live-traffic" onNavigate={onNavigate} /> */}
 
       <main className="live-traffic-main">
         <header className="live-header">
