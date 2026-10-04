@@ -341,7 +341,7 @@ const krakowTrafficMock = {
 
 function LiveTrafficPage() {
   const { data: traffic, loading, error, updatedAt, isMock, reload } = useApiResource(
-    "/api/city/traffic", krakowTrafficMock, validateTraffic,
+    "/api/city/traffic", krakowTrafficMock, validateTraffic, 5000,
   );
   const empty = traffic && traffic.corridors.length === 0 && traffic.intersections.length === 0;
   const [selectedIntersection, setSelectedIntersection] = useState(null);
@@ -1014,11 +1014,16 @@ function LiveTrafficPage() {
         <section className="live-dashboard">
           <div className="traffic-map-wrapper">
             {loading && <div role="status" className="flex min-h-[600px] items-center justify-center">Loading traffic data…</div>}
-            {error && (
+            {error && !traffic && (
               <div role="alert" className="flex min-h-[600px] flex-col items-center justify-center gap-4 p-6 text-center">
                 <h2 className="text-lg font-semibold">Traffic data is unavailable</h2>
                 <p>{error.message}</p>
                 <button type="button" onClick={reload} className="rounded bg-[#111613] px-4 py-2 text-white">Try again</button>
+              </div>
+            )}
+            {error && traffic && (
+              <div role="alert" className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-900">
+                Update failed: {error.message} Showing the last data received; retrying automatically.
               </div>
             )}
             {empty && <div role="status" className="flex min-h-[600px] items-center justify-center p-6 text-center">No traffic data is available yet.</div>}

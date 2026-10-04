@@ -42,6 +42,8 @@ npm.cmd run build:api
 
 The API client is shared in `src/services/api.js`; `src/hooks/useApiResource.js` handles loading, retry and cancellation on unmount.
 
+In API mode, Live Traffic refreshes automatically every five seconds. Existing map data, zoom and layer selection remain visible while an update is fetched. Failed updates display a warning and retain the last successful data; polling retries automatically. Requests do not overlap, and polling stops when the page is closed. Mock mode does not poll the API. Road colours follow the selected metric so changes are visible along the corridors as well as at intersections.
+
 ## Backend Docker configuration
 
 The backend repository at `C:\Users\user\Downloads\smartcity\SmartCity-BE` contains its own Dockerfile. It belongs to the backend repository and is not copied into this frontend repository.
@@ -55,4 +57,4 @@ npm.cmd run dev:api
 
 With `dotnet run --launch-profile http`, retain the default target `http://localhost:5156`. The frontend always requests relative `/api/` URLs. For a deployed static frontend, configure the hosting server to forward `/api/` to the backend container.
 
-The supplied backend Dockerfile currently needs correction before building: its project files are under `HackYeahBackend/`, multiple `.csproj` files require selecting one explicitly, and its `GreenPaceIQ.Api.dll` entrypoint does not match the main `HackYeahBackend.csproj` assembly. No backend files were changed in this frontend migration.
+The backend Dockerfile builds `HackYeahBackend/HackYeahBackend.csproj` and runs `HackYeahBackend.dll`. Build it from the backend repository root. The live traffic generator runs in the container by default, updating simulated driver observations every five seconds.

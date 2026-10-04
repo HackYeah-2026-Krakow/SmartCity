@@ -8,6 +8,7 @@ import {
   CircleMarker,
   MapContainer,
   Popup,
+  Polyline,
   TileLayer,
   ZoomControl,
   useMap,
@@ -504,6 +505,23 @@ function TrafficMap({
           data={data}
           activeLayer={activeLayer}
         />
+
+        {data.corridors.map(corridor => (
+          <Polyline
+            key={corridor.id}
+            positions={corridor.path}
+            pathOptions={{
+              color: markerColor(corridor.heat[activeLayer], activeLayer),
+              weight: 7,
+              opacity: 0.85,
+            }}
+          >
+            <Popup>
+              <strong>{corridor.name}</strong>
+              <div>{valueForLayer(corridor, activeLayer)}</div>
+            </Popup>
+          </Polyline>
+        ))}
 
         {data.intersections.map(
           (intersection) => {
