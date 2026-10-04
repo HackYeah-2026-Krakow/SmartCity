@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import Sidebar from "../components/Sidebar";
+import { useApiResource } from "../hooks/useApiResource";
+import { validateTraffic } from "../services/traffic";
 import TrafficMap from "../components/TrafficMap";
 import TrafficAssistant from "../components/TrafficAssistant";
 
@@ -338,7 +339,11 @@ const krakowTrafficMock = {
   ],
 };
 
-function LiveTrafficPage({ onNavigate }) {
+function LiveTrafficPage() {
+  const { data: traffic, loading, error, updatedAt, isMock, reload } = useApiResource(
+    "/api/city/traffic", krakowTrafficMock, validateTraffic,
+  );
+  const empty = traffic && traffic.corridors.length === 0 && traffic.intersections.length === 0;
   const [selectedIntersection, setSelectedIntersection] = useState(null);
 
   return (
@@ -995,26 +1000,45 @@ function LiveTrafficPage({ onNavigate }) {
         <header className="live-header">
           <div>
             <h1>Live Traffic Intelligence</h1>
-            <p>Where is the problem — and how do we fix it?</p>
+            <p>Traffic speed, congestion and signal delays in Krakow.</p>
           </div>
 
           <div className="live-status">
-            <span className="live-dot" />
-            <strong>Live</strong>
-            <span>updated 12 s ago</span>
+            <span className="live-dot" style={{ background: error ? "#ef4444" : loading ? "#eab308" : undefined }} />
+            <strong>{isMock ? "Mock data" : loading ? "Connecting" : error ? "API unavailable" : traffic?.simulated ? "Simulated data · API" : "API data"}</strong>
+            {updatedAt && <span>Fetched at {updatedAt.toLocaleTimeString()}</span>}
+            {!isMock && <button type="button" onClick={reload} disabled={loading} className="rounded border px-2 py-1 disabled:opacity-50">Refresh</button>}
           </div>
         </header>
 
         <section className="live-dashboard">
           <div className="traffic-map-wrapper">
-            <TrafficMap
-              data={krakowTrafficMock}
-              selectedIntersection={selectedIntersection}
-              onSelectIntersection={setSelectedIntersection}
-            />
+            {loading && <div role="status" className="flex min-h-[600px] items-center justify-center">Loading traffic data…</div>}
+            {error && (
+              <div role="alert" className="flex min-h-[600px] flex-col items-center justify-center gap-4 p-6 text-center">
+                <h2 className="text-lg font-semibold">Traffic data is unavailable</h2>
+                <p>{error.message}</p>
+                <button type="button" onClick={reload} className="rounded bg-[#111613] px-4 py-2 text-white">Try again</button>
+              </div>
+            )}
+            {empty && <div role="status" className="flex min-h-[600px] items-center justify-center p-6 text-center">No traffic data is available yet.</div>}
+            {traffic && !empty && (
+              <TrafficMap
+                data={traffic}
+                isMock={isMock}
+                selectedIntersection={selectedIntersection}
+                onSelectIntersection={setSelectedIntersection}
+              />
+            )}
           </div>
 
-          <TrafficAssistant />
+          {isMock ? <TrafficAssistant /> : (
+            <aside className="rounded-[17px] border border-[#dde4df] bg-white p-5">
+              <h2 className="font-semibold">Traffic data</h2>
+              <p className="mt-3 text-sm text-[#66716a]">{loading ? "Fetching traffic data…" : error ? "Data could not be loaded." : traffic ? "Metrics are calculated from trip records and driver speed samples. Signal timing and traffic flow use model assumptions. Air-quality measurements are unavailable." : "No traffic data is available."}</p>
+              {traffic?.simulated && <p className="mt-3 text-sm font-semibold">This view includes simulated traffic data.</p>}
+            </aside>
+          )}
         </section>
       </main>
     </div>

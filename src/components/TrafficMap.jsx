@@ -378,7 +378,7 @@ function valueForLayer(
       return `${metrics.congestionPercent}% congestion`;
 
     case "airPollution":
-      return `${metrics.no2} µg/m³ NO₂`;
+      return Number.isFinite(metrics.no2) ? `${metrics.no2} µg/m³ NO₂` : "No air-quality data";
 
     case "signalDelays":
       return `${metrics.signalDelaySec} sec delay`;
@@ -433,6 +433,7 @@ function markerColor(
 
 function TrafficMap({
   data,
+  isMock = true,
   selectedIntersection,
   onSelectIntersection,
 }) {
@@ -445,64 +446,19 @@ function TrafficMap({
     layerConfig[activeLayer];
 
 
+  const hasAirQuality = [...data.intersections, ...data.corridors].some(item => Number.isFinite(item.metrics.no2));
   const summary = useMemo(() => {
-    const intersections =
-      data.intersections;
-
-    const averageSpeed =
-      intersections.reduce(
-        (sum, item) =>
-          sum +
-          item.metrics.speedKmh,
-        0
-      ) /
-      intersections.length;
-
-    const averageCongestion =
-      intersections.reduce(
-        (sum, item) =>
-          sum +
-          item.metrics
-            .congestionPercent,
-        0
-      ) /
-      intersections.length;
-
-    const averageNO2 =
-      intersections.reduce(
-        (sum, item) =>
-          sum +
-          item.metrics.no2,
-        0
-      ) /
-      intersections.length;
-
-    const averageDelay =
-      intersections.reduce(
-        (sum, item) =>
-          sum +
-          item.metrics
-            .signalDelaySec,
-        0
-      ) /
-      intersections.length;
-
+    const mean = field => {
+      const values = data.intersections.map(item => item.metrics[field]).filter(Number.isFinite);
+      return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null;
+    };
+    const speed = mean("speedKmh");
+    const rounded = field => { const value = mean(field); return value === null ? "No data" : Math.round(value); };
     return {
-      averageSpeed:
-        averageSpeed.toFixed(1),
-
-      averageCongestion:
-        Math.round(
-          averageCongestion
-        ),
-
-      averageNO2:
-        Math.round(averageNO2),
-
-      averageDelay:
-        Math.round(
-          averageDelay
-        ),
+      averageSpeed: speed === null ? "No data" : speed.toFixed(1),
+      averageCongestion: rounded("congestionPercent"),
+      averageNO2: rounded("no2"),
+      averageDelay: rounded("signalDelaySec"),
     };
   }, [data]);
 
@@ -645,11 +601,7 @@ function TrafficMap({
                       </span>
 
                       <strong>
-                        {
-                          intersection
-                            .metrics.no2
-                        }{" "}
-                        µg/m³
+                        {Number.isFinite(intersection.metrics.no2) ? `${intersection.metrics.no2} µg/m³` : "No data"}
                       </strong>
 
                       <span>
@@ -693,7 +645,7 @@ function TrafficMap({
       >
         {Object.entries(
           layerConfig
-        ).map(
+        ).filter(([key]) => key !== "airPollution" || hasAirQuality).map(
           ([
             key,
             layer,
@@ -745,7 +697,7 @@ function TrafficMap({
         "
       >
         <div className="text-[8px] font-bold uppercase tracking-[1.2px] text-[#8df4bd]">
-          Mock scenario
+          {isMock ? "Mock scenario" : "Traffic scenario"}
         </div>
 
         <div className="mt-[2px] text-[10px]">
@@ -829,7 +781,7 @@ function TrafficMap({
 
         <div className="border-r border-[#e8ece9] px-4 py-[10px]">
           <strong className="block text-[15px] text-[#111613]">
-            {summary.averageCongestion}%
+            {summary.averageCongestion}{typeof summary.averageCongestion === "number" ? "%" : ""}
           </strong>
 
           <span className="text-[8px] text-[#778079]">
@@ -849,7 +801,7 @@ function TrafficMap({
 
         <div className="px-4 py-[10px]">
           <strong className="block text-[15px] text-[#111613]">
-            {summary.averageDelay}s
+            {summary.averageDelay}{typeof summary.averageDelay === "number" ? "s" : ""}
           </strong>
 
           <span className="text-[8px] text-[#778079]">
@@ -876,7 +828,7 @@ function TrafficMap({
           text-white
         "
       >
-        MOCK TRAFFIC DATA
+        {isMock ? "MOCK TRAFFIC DATA" : data.simulated ? "SIMULATED TRAFFIC · API" : "TRAFFIC DATA · API"}
       </div>
     </div>
   );

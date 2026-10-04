@@ -1,0 +1,38 @@
+.city-impact-api {
+  color-scheme: light;
+  font-size: 14px;
+  text-align: left;
+}
+
+.city-impact-api h1 {
+  margin: 0;
+  color: #151a17;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.6px;
+}
+
+.city-impact-api h2 {
+  margin: 0 0 10px;
+  color: #151a17;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+
+.city-impact-api header p {
+  margin-top: 5px;
+}
+
+.city-impact-api .city-stat-card .metric-label {
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.city-impact-api button:focus-visible,
+.city-impact-api summary:focus-visible {
+  outline: 2px solid #14844a;
+  outline-offset: 3px;
+}

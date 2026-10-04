@@ -8,10 +8,11 @@ function ImpactMetricCard({
   target,
   progress,
   unit = "",
+  badge,
+  changePct,
 }) {
-  const badge = title.includes("Traffic")
-    ? "12% improvement"
-    : "8.4% reduction";
+  const safeProgress = Math.max(0, Math.min(100, Number.isFinite(progress) ? progress : 0));
+  const increased = Number.isFinite(changePct) && changePct > 0;
 
   return (
     <div className="mt-2 rounded-[10px] bg-[#f3f5f4] p-[10px]">
@@ -27,7 +28,7 @@ function ImpactMetricCard({
           </span>
         </div>
 
-        <div
+        {badge && <div
           className="
             h-fit
             rounded-[5px]
@@ -39,8 +40,8 @@ function ImpactMetricCard({
             text-[#07824a]
           "
         >
-          {badge}
-        </div>
+          <span className={increased ? "text-[#b42318]" : ""}>{badge}</span>
+        </div>}
       </div>
 
       {/* Values */}
@@ -52,7 +53,7 @@ function ImpactMetricCard({
 
           <strong className="mt-[2px] block text-[14px]">
             {baseline}
-            {unit}
+            {unit && ` ${unit}`}
           </strong>
         </div>
 
@@ -83,12 +84,12 @@ function ImpactMetricCard({
       <div className="mt-2 h-[4px] overflow-hidden rounded-full bg-[#dce2df]">
         <div
           className="h-full rounded-full bg-[#2be78a]"
-          style={{ width: `${progress}%` }}
+          style={{ width: `${safeProgress}%` }}
         />
       </div>
 
       <div className="mt-1 text-[12px] text-[#7e8781]">
-        {progress}% of the way to target
+        {safeProgress}% of the way to target
       </div>
     </div>
   );

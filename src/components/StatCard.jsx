@@ -3,12 +3,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
   faArrowUp,
+  faArrowDown,
 } from "@fortawesome/free-solid-svg-icons";
 
-function StatCard({ label, value, change, suffix }) {
+function StatCard({ label, value, change, suffix, changePct, lowerIsBetter = false }) {
+  const direction = Number.isFinite(changePct) ? changePct : null;
+  const worsened = direction !== null && (lowerIsBetter ? direction > 0 : direction < 0);
+
   return (
     <div
       className="
+        city-stat-card
         min-h-[68px]
         rounded-[10px]
         border border-[#edf0ed]
@@ -18,6 +23,7 @@ function StatCard({ label, value, change, suffix }) {
     >
       <div
         className="
+          metric-label
           text-[8px]
           uppercase
           tracking-[0.5px]
@@ -54,10 +60,10 @@ function StatCard({ label, value, change, suffix }) {
           "
         >
           <FontAwesomeIcon
-            icon={faArrowUp}
-            className="w-[12px] shrink-0 text-center text-[12px]"
+            icon={direction !== null && direction < 0 ? faArrowDown : faArrowUp}
+            className={`w-[12px] shrink-0 text-center text-[12px] ${worsened ? "text-[#b42318]" : ""}`}
           />
-          {change}
+          <span className={worsened ? "text-[#b42318]" : ""}>{change}</span>
         </div>
       )}
     </div>
