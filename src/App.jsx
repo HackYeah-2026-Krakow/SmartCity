@@ -2,6 +2,7 @@ import { useState } from "react";
 import Sidebar from "./components/Sidebar"; // adjust path to your Sidebar
 import CityImpactPage from "./page/CityImpactPage";
 import LiveTrafficPage from "./page/LiveTrafficPage";
+import ExportReport from "./page/ExportReport";
 
 const simplePages = {
   "rewards-programme": {
@@ -74,11 +75,18 @@ function SimpleConsolePage({ page }) {
 
 function App() {
   const [activePage, setActivePage] = useState("city-impact");
+  const [range, setRange] = useState('30d');
+  const [view, setView] = useState('dashboard'); // 'dashboard' | 'report'
+
+
+  if (view === 'report') {
+    return <ExportReport range={range} onBack={() => setView('dashboard')} />;
+  }
 
   const renderPage = () => {
     switch (activePage) {
       case "city-impact":
-        return <CityImpactPage />;
+        return <CityImpactPage range={range} setRange={setRange} onExport={() => setView('report')}  />;
       case "live-traffic":
         return <LiveTrafficPage />;
     }
