@@ -3,6 +3,341 @@ import Sidebar from "../components/Sidebar";
 import TrafficMap from "../components/TrafficMap";
 import TrafficAssistant from "../components/TrafficAssistant";
 
+const krakowTrafficMock = {
+  scenario: "Weekday evening peak · 17:15",
+
+  corridors: [
+    {
+      id: "aleje",
+      name: "Aleje Trzech Wieszczów",
+      path: [
+        [50.0489, 19.9320], // Rondo Grunwaldzkie
+        [50.0530, 19.9280],
+        [50.0577, 19.9262], // Krasińskiego
+        [50.0615, 19.9250],
+        [50.0645, 19.9242], // Mickiewicza
+        [50.0700, 19.9238],
+      ],
+
+      heat: {
+        trafficSpeed: 0.20,
+        congestion: 0.92,
+        airPollution: 0.98,
+        signalDelays: 0.73,
+        greenEfficiency: 0.20,
+      },
+
+      metrics: {
+        speedKmh: 12,
+        congestionPercent: 88,
+        no2: 52,
+        signalDelaySec: 71,
+        efficiencyPercent: 22,
+      },
+    },
+
+    {
+      id: "mogilska-lubicz",
+      name: "Lubicz / Mogilska",
+
+      path: [
+        [50.0648, 19.9440],
+        [50.0652, 19.9490],
+        [50.0657, 19.9540],
+        [50.0660, 19.9594], // Rondo Mogilskie
+        [50.0657, 19.9650],
+        [50.0653, 19.9710],
+      ],
+
+      heat: {
+        trafficSpeed: 0.24,
+        congestion: 0.94,
+        airPollution: 0.68,
+        signalDelays: 0.96,
+        greenEfficiency: 0.18,
+      },
+
+      metrics: {
+        speedKmh: 14,
+        congestionPercent: 91,
+        no2: 39,
+        signalDelaySec: 94,
+        efficiencyPercent: 19,
+      },
+    },
+
+    {
+      id: "dietla",
+      name: "Dietla",
+
+      path: [
+        [50.0490, 19.9320],
+        [50.0520, 19.9370],
+        [50.0559, 19.9451], // Starowiślna
+        [50.0570, 19.9520],
+        [50.0576, 19.9591], // Grzegórzeckie
+      ],
+
+      heat: {
+        trafficSpeed: 0.38,
+        congestion: 0.77,
+        airPollution: 0.67,
+        signalDelays: 0.84,
+        greenEfficiency: 0.34,
+      },
+
+      metrics: {
+        speedKmh: 18,
+        congestionPercent: 74,
+        no2: 37,
+        signalDelaySec: 68,
+        efficiencyPercent: 34,
+      },
+    },
+
+    {
+      id: "powstania",
+      name: "Powstania Warszawskiego",
+
+      path: [
+        [50.0660, 19.9594],
+        [50.0635, 19.9592],
+        [50.0607, 19.9591],
+        [50.0576, 19.9591],
+      ],
+
+      heat: {
+        trafficSpeed: 0.29,
+        congestion: 0.88,
+        airPollution: 0.62,
+        signalDelays: 0.91,
+        greenEfficiency: 0.25,
+      },
+
+      metrics: {
+        speedKmh: 15,
+        congestionPercent: 85,
+        no2: 35,
+        signalDelaySec: 82,
+        efficiencyPercent: 27,
+      },
+    },
+
+    {
+      id: "basztowa",
+      name: "Basztowa / Westerplatte",
+
+      path: [
+        [50.0653, 19.9345],
+        [50.0655, 19.9405],
+        [50.0649, 19.9455],
+        [50.0626, 19.9485],
+        [50.0602, 19.9478],
+      ],
+
+      heat: {
+        trafficSpeed: 0.48,
+        congestion: 0.64,
+        airPollution: 0.50,
+        signalDelays: 0.69,
+        greenEfficiency: 0.46,
+      },
+
+      metrics: {
+        speedKmh: 21,
+        congestionPercent: 61,
+        no2: 31,
+        signalDelaySec: 54,
+        efficiencyPercent: 47,
+      },
+    },
+
+    {
+      id: "konopnickiej",
+      name: "Konopnickiej",
+
+      path: [
+        [50.0415, 19.9325],
+        [50.0450, 19.9322],
+        [50.0489, 19.9320],
+        [50.0520, 19.9290],
+      ],
+
+      heat: {
+        trafficSpeed: 0.43,
+        congestion: 0.71,
+        airPollution: 0.57,
+        signalDelays: 0.61,
+        greenEfficiency: 0.41,
+      },
+
+      metrics: {
+        speedKmh: 20,
+        congestionPercent: 69,
+        no2: 34,
+        signalDelaySec: 48,
+        efficiencyPercent: 42,
+      },
+    },
+  ],
+
+  intersections: [
+    {
+      id: "mogilskie",
+      name: "Rondo Mogilskie",
+      position: [50.0660, 19.9594],
+
+      heat: {
+        trafficSpeed: 0.15,
+        congestion: 1.0,
+        airPollution: 0.66,
+        signalDelays: 1.0,
+        greenEfficiency: 0.15,
+      },
+
+      metrics: {
+        speedKmh: 11,
+        congestionPercent: 96,
+        no2: 38,
+        signalDelaySec: 101,
+        efficiencyPercent: 16,
+      },
+    },
+
+    {
+      id: "grzegorzeckie",
+      name: "Rondo Grzegórzeckie",
+      position: [50.0576, 19.9591],
+
+      heat: {
+        trafficSpeed: 0.18,
+        congestion: 0.96,
+        airPollution: 0.71,
+        signalDelays: 0.97,
+        greenEfficiency: 0.18,
+      },
+
+      metrics: {
+        speedKmh: 12,
+        congestionPercent: 93,
+        no2: 40,
+        signalDelaySec: 96,
+        efficiencyPercent: 20,
+      },
+    },
+
+    {
+      id: "grunwaldzkie",
+      name: "Rondo Grunwaldzkie",
+      position: [50.0489, 19.9320],
+
+      heat: {
+        trafficSpeed: 0.29,
+        congestion: 0.84,
+        airPollution: 0.58,
+        signalDelays: 0.88,
+        greenEfficiency: 0.27,
+      },
+
+      metrics: {
+        speedKmh: 16,
+        congestionPercent: 81,
+        no2: 34,
+        signalDelaySec: 78,
+        efficiencyPercent: 29,
+      },
+    },
+
+    {
+      id: "mickiewicza-czarnowiejska",
+      name: "Mickiewicza × Czarnowiejska",
+      position: [50.0643, 19.9243],
+
+      heat: {
+        trafficSpeed: 0.19,
+        congestion: 0.93,
+        airPollution: 0.91,
+        signalDelays: 0.94,
+        greenEfficiency: 0.18,
+      },
+
+      metrics: {
+        speedKmh: 12,
+        congestionPercent: 89,
+        no2: 49,
+        signalDelaySec: 88,
+        efficiencyPercent: 21,
+      },
+    },
+
+    {
+      id: "krasinskiego",
+      name: "Aleja Krasińskiego",
+      position: [50.0577, 19.9262],
+
+      heat: {
+        trafficSpeed: 0.23,
+        congestion: 0.88,
+        airPollution: 1.0,
+        signalDelays: 0.71,
+        greenEfficiency: 0.21,
+      },
+
+      metrics: {
+        speedKmh: 13,
+        congestionPercent: 84,
+        no2: 55,
+        signalDelaySec: 63,
+        efficiencyPercent: 23,
+      },
+    },
+
+    {
+      id: "dietla-starowislna",
+      name: "Dietla × Starowiślna",
+      position: [50.0559, 19.9451],
+
+      heat: {
+        trafficSpeed: 0.34,
+        congestion: 0.78,
+        airPollution: 0.67,
+        signalDelays: 0.88,
+        greenEfficiency: 0.33,
+      },
+
+      metrics: {
+        speedKmh: 17,
+        congestionPercent: 76,
+        no2: 37,
+        signalDelaySec: 74,
+        efficiencyPercent: 35,
+      },
+    },
+
+    {
+      id: "old-town",
+      name: "Old Town / Planty",
+      position: [50.0617, 19.9373],
+
+      heat: {
+        trafficSpeed: 0.82,
+        congestion: 0.20,
+        airPollution: 0.18,
+        signalDelays: 0.18,
+        greenEfficiency: 0.88,
+      },
+
+      metrics: {
+        speedKmh: 31,
+        congestionPercent: 18,
+        no2: 20,
+        signalDelaySec: 18,
+        efficiencyPercent: 87,
+      },
+    },
+  ],
+};
+
 function LiveTrafficPage({ onNavigate }) {
   const [selectedIntersection, setSelectedIntersection] = useState(null);
 
@@ -673,6 +1008,7 @@ function LiveTrafficPage({ onNavigate }) {
         <section className="live-dashboard">
           <div className="traffic-map-wrapper">
             <TrafficMap
+              data={krakowTrafficMock}
               selectedIntersection={selectedIntersection}
               onSelectIntersection={setSelectedIntersection}
             />
